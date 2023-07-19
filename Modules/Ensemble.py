@@ -1053,8 +1053,8 @@ Error, the following stress files are missing from the ensemble:
         """
 
         # Perform the standard initialization
-
         self.N = len(structures)
+        print(self.N)
         Nat_sc = np.prod(self.supercell) * self.dyn_0.structure.N_atoms
 
         self.structures = [x for x in structures]

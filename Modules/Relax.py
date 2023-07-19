@@ -274,7 +274,8 @@ class SSCHA(object):
 
     def relax(self, restart_from_ens = False, get_stress = False,
               ensemble_loc = None, start_pop = None, sobol = False,
-               sobol_scramble = False, sobol_scatter = 0.0):
+               sobol_scramble = False, sobol_scatter = 0.0,
+               restart_from_calc = False, restart_struct_list=[]):
         """
         COSTANT VOLUME RELAX
         ====================
@@ -347,8 +348,10 @@ Error, the specified location to save the ensemble:
             self.minim.ensemble.dyn_0 = self.minim.dyn.Copy()
 
             if pop != start_pop or not restart_from_ens:
-                self.minim.ensemble.generate(self.N_configs, sobol = sobol, sobol_scramble = sobol_scramble, sobol_scatter = sobol_scatter)
-
+                if not restart_from_calc:
+                    self.minim.ensemble.generate(self.N_configs, sobol = sobol, sobol_scramble = sobol_scramble, sobol_scatter = sobol_scatter)
+                else:
+                    self.minim.ensemble.init_from_structures(restart_struct_list)
                 # Compute energies and forces
                 self.minim.ensemble.compute_ensemble(self.calc, get_stress,
                                                  cluster = self.cluster)
@@ -400,7 +403,8 @@ Error, the specified location to save the ensemble:
                  restart_from_ens = False,
                  ensemble_loc = None, start_pop = None, stress_numerical = False,
                  cell_relax_algorithm = "sd", fix_volume = False, sobol = False,
-                  sobol_scramble = False, sobol_scatter = 0.0):
+                  sobol_scramble = False, sobol_scatter = 0.0, 
+                  restart_from_calc = False, restart_struct_list=[]):
         """
         VARIABLE CELL RELAX
         ====================
@@ -565,7 +569,10 @@ Error, the specified location to save the ensemble:
             # Generate the ensemble
             self.minim.ensemble.dyn_0 = self.minim.dyn.Copy()
             if pop != start_pop or not restart_from_ens:
-                self.minim.ensemble.generate(self.N_configs, sobol=sobol, sobol_scramble = sobol_scramble, sobol_scatter = sobol_scatter)
+                if not restart_from_calc:
+                    self.minim.ensemble.generate(self.N_configs, sobol = sobol, sobol_scramble = sobol_scramble, sobol_scatter = sobol_scatter)
+                else:
+                    self.minim.ensemble.init_from_structures(restart_struct_list)
 
                 # Save also the generation
                 #if ensemble_loc is not None and self.save_ensemble:
